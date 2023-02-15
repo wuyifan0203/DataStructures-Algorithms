@@ -5,8 +5,8 @@ export class StackArray{
         this.type = 'StackArray';
     }
     // 添加一个（或几个）新元素到栈顶
-    push(...elements){
-        this.items.push(...elements);
+    push(element){
+        this.items.push(element);
     }
 
     // 移除栈顶的元素，同时返回被移除的元素

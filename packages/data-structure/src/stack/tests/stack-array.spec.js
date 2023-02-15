@@ -14,7 +14,8 @@ describe('stack-array', () => {
         expect(stackArray.pop()).toBe(undefined);
 
         stackArray.push(1);
-        stackArray.push(2, 3);
+        stackArray.push(2);
+        stackArray.push(3);
 
         expect(stackArray.isEmpty()).toBe(false);
 

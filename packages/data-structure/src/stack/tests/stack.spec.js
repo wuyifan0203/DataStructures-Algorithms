@@ -13,7 +13,8 @@ describe('Stack', () => {
         expect(stack.pop()).toBe(undefined);
 
         stack.push(1);
-        stack.push(2, 3);
+        stack.push(2);
+        stack.push(3);
 
         expect(stack.isEmpty()).toBe(false);
 

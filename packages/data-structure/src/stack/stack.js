@@ -6,16 +6,9 @@ export class Stack {
     }
 
     // 添加一个（或几个）新元素到栈顶
-    push(...elements) {
-        if (elements.length === 1) {
-            this._items[this._count] = elements[0];
-            this._count++;
-        } else {
-            for (const element of elements) {
-                this._items[this._count] = element;
-                this._count++;
-            }
-        }
+    push(element) {
+        this._items[this._count] = element;
+        this._count++;
     }
 
     // 移除栈顶的元素，同时返回被移除的元素
