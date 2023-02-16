@@ -5,7 +5,7 @@ class Stack {
         this.type = 'Stack';
     }
 
-    // 添加一个（或几个）新元素到栈顶
+    // 添加一个新元素到栈顶
     push(element) {
         this._items[this._count] = element;
         this._count++;
@@ -63,7 +63,7 @@ class StackArray{
         this.items = [];
         this.type = 'StackArray';
     }
-    // 添加一个（或几个）新元素到栈顶
+    // 添加一个新元素到栈顶
     push(element){
         this.items.push(element);
     }
@@ -129,12 +129,14 @@ class Queue{
         this.type = 'Queue';
     }
 
+    // 添加元素
     enqueue(element){
         this._items[this._count] = element;
         this._count++;
     }
 
-    dequene(){
+    // 推出元素
+    dequeue(){
         if(this.isEmpty()){
             return undefined;
         }
@@ -144,22 +146,23 @@ class Queue{
         return result;
     }
 
+    // 查看第一个元素
     peek(){
-        if(this.isEmpty()){
-            return undefined;
-        }
-        return this._items[this._lowestCount];
+        return this._items[this._lowestCount] ?? undefined;
     }
 
+    // 清空
     clear(){
         this._count = this._lowestCount = 0;
         this._items = {};
     }
 
+    // 是否为空
     isEmpty(){
-        return this.size() === 0;
+        return !this.size();
     }
 
+    // 返回队列长度
     size(){
         return this._count - this._lowestCount;
     }
@@ -264,6 +267,80 @@ class DoubleEndedQueue {
     }
 }
 
+class QueueElement{
+    constructor(element,priority){
+        this._element = element,
+        this.priority = priority;
+    }
+
+    get element(){
+        return this._element;
+    }
+
+    toString(){
+        return this._element.toString();
+    }
+}
+ 
+class PriorityQueue{
+    constructor(){
+        this._items = [];
+        this.type = 'PriorityQueue';
+    }
+
+    // 添加元素
+    enqueue(element,priority){
+        const node = new QueueElement(element,priority);
+        if(this.isEmpty()){
+            this._items.push(node);
+        }else {
+            for (let i = 0,length = this.size(); i < length ; i++) {
+                if(node.priority < this._items[i].priority){
+                    this._items.splice(i,0,node);
+                    return;
+                }
+            }
+            this._items.push(node);
+        }
+    }
+
+    dequeue(){
+        if(this.isEmpty()){
+            return undefined;
+        }
+        return this._items.shift();
+    }
+
+    isEmpty(){
+        return !this.size();
+    }
+
+    peek(){
+        return this._items[0] ?? undefined;
+    }
+
+
+    size(){
+        return this._items.length;
+    }
+
+    clear(){
+        this._items.length = 0;
+    }
+
+    toString(){
+        if(this.isEmpty()){
+            return '';
+        }
+        let result = this._items[0].toString();
+        for (let i = 1,length = this.size(); i < length; i++) {
+            result = result + ',' +this._items[1].toString();
+        }
+        return result;
+    }
+
+}
+
 //实现一个模拟的击鼓传花游戏
 // 经历 7 轮
 // A -> B -> C -> D -> E；
@@ -326,4 +403,4 @@ function palindromeChecker(string) {
     return isEqual;
 }
 
-export { DoubleEndedQueue, Queue, Stack, StackArray, baseConverter, hotPotato, palindromeChecker };
+export { DoubleEndedQueue, PriorityQueue, Queue, Stack, StackArray, baseConverter, hotPotato, palindromeChecker };
