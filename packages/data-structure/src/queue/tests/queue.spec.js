@@ -11,7 +11,7 @@ describe('Queue', () => {
 
         expect(queue.peek()).toBe(undefined);
         expect(queue.isEmpty()).toBe(true);
-        expect(queue.dequene()).toBe(undefined);
+        expect(queue.dequeue()).toBe(undefined);
 
         queue.enqueue(1);
         queue.enqueue(2);
@@ -24,7 +24,7 @@ describe('Queue', () => {
 
         expect(queue.peek()).toBe(1);
 
-        expect(queue.dequene()).toBe(1);
+        expect(queue.dequeue()).toBe(1);
 
         expect(queue.peek()).toBe(2);
 

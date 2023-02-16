@@ -4,7 +4,7 @@ export class StackArray{
         this.items = [];
         this.type = 'StackArray';
     }
-    // 添加一个（或几个）新元素到栈顶
+    // 添加一个新元素到栈顶
     push(element){
         this.items.push(element);
     }

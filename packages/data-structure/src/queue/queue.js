@@ -9,12 +9,14 @@ export class Queue{
         this.type = 'Queue'
     }
 
+    // 添加元素
     enqueue(element){
         this._items[this._count] = element;
         this._count++;
     }
 
-    dequene(){
+    // 推出元素
+    dequeue(){
         if(this.isEmpty()){
             return undefined;
         }
@@ -24,22 +26,23 @@ export class Queue{
         return result;
     }
 
+    // 查看第一个元素
     peek(){
-        if(this.isEmpty()){
-            return undefined;
-        }
-        return this._items[this._lowestCount];
+        return this._items[this._lowestCount] ?? undefined;
     }
 
+    // 清空
     clear(){
         this._count = this._lowestCount = 0;
         this._items = {};
     }
 
+    // 是否为空
     isEmpty(){
-        return this.size() === 0;
+        return !this.size();
     }
 
+    // 返回队列长度
     size(){
         return this._count - this._lowestCount;
     }
