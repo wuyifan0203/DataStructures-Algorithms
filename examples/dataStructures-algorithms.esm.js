@@ -100,10 +100,10 @@ class StackArray{
 
 const stack = new Stack();
 
-function baseConverter(number ,base = 2) {
+function baseConverter(number, base = 2) {
 
-    if (!(base >= 2 && base <= 36)) { 
-        return ''; 
+    if (!(base >= 2 && base <= 36)) {
+        return '';
     }
     const digits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let origin = number;
