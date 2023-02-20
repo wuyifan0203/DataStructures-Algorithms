@@ -68,3 +68,27 @@ export const removeDuplicates = function(s) {
     }
     return stack.join('');
 };
+
+// leetcode 682
+export const calPoints = function(operations) {
+    const recalled = [];
+    let result = 0;
+    for (let i = 0,length = operations.length; i < length; i++) {
+        const o = operations[i];
+        if(!isNaN(+o)){
+            recalled.push(+o);
+            result = result + (+o);
+        }else{
+            if(o === 'C'){
+                result = result - recalled.pop();
+            }else if(o === 'D'){
+                recalled.push(recalled.at(-1)*2);
+                result+=recalled.at(-1);
+            }else if(o === '+'){
+                recalled.push(recalled.at(-2)+recalled.at(-1));
+                result+=recalled.at(-1);
+            }
+        }
+    }
+    return result
+};
