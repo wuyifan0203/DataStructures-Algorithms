@@ -1,6 +1,6 @@
 import { isSame } from "../utils/common";
 
-class Node {
+export class Node {
     constructor(element) {
         this._element = element;
         this.next = null;
@@ -72,21 +72,21 @@ export class LinkedList {
     /**
      * @description: 得到指定索引的元素
      * @param {int} position
-     * @return {undefined|any}
+     * @return {undefined|Node}
      */
     getElementAt(position) {
         if (this.isEmpty()) {
             return undefined
         }
         if (position === 0) {
-            return this.head.element;
+            return this.head;
         }
         if (position > 0 && position < this._count) {
             let current = this.head;
             for (let i = 0; i < position; i++) {
                 current = current.next;
             }
-            return current.element;
+            return current;
         }
         return undefined
     }
@@ -94,22 +94,21 @@ export class LinkedList {
 
     /**
      * @description: 删除指定元素
-     * @param {*} element
-     * @return {*}
+     * @param {any} element
+     * @return {int} position
      */
     remove(element) {
         const index = this.indexOf(element);
         if (index !== -1) {
             this.removeAt(index);
-            return index;
         }
-        return -1
+        return index;
     }
 
     /**
      * @description: 返回元素在列表中的索引
      * @param {any} element
-     * @return {number}
+     * @return {int} position
      */
     indexOf(element) {
         let result = -1;
@@ -118,7 +117,7 @@ export class LinkedList {
         }
         let current = this.head
         for (let i = 0, length = this._count; i < length; i++) {
-            if (isSame(element, current.element)) {
+            if (this.isEqual(element, current.element)) {
                 return i;
             } else {
                 current = current.next;
@@ -166,10 +165,29 @@ export class LinkedList {
 
     /**
      * @description: 返回长度
-     * @return {number}
+     * @return {int}
      */
     size() {
         return this._count
+    }
+
+    /**
+     * @description: 比较a 与 b 是否相等
+     * @param {any} a
+     * @param {any} b
+     * @return {boolean}
+     */
+    isEqual(a,b){
+        return isSame(a,b)
+    }
+
+    /**
+     * @description: 清空
+     * @return {void}
+     */
+    clear(){
+        this._count = 0;
+        this.head = null
     }
 
     /**
