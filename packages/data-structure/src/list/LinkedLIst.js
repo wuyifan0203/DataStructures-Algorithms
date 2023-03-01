@@ -61,7 +61,7 @@ export class LinkedList {
                     for (let i = 0,length = position -1; i < length; i++) {
                         current = current.next
                     }
-                    node.next = current.next.next;
+                    node.next = current.next;
                     current.next = node;
                 }
                 this._count++;

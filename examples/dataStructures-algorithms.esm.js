@@ -98,6 +98,404 @@ class StackArray{
     }
 }
 
+const isSame = Object.is;
+
+class Node {
+    constructor(element) {
+        this._element = element;
+        this.next = null;
+    }
+
+    get element() {
+        return this._element;
+    }
+
+    set element(newValue) {
+        this._element = newValue;
+    }
+}
+
+class LinkedList {
+    constructor() {
+        this.head = null;
+        this._count = 0;
+        this.type = 'LinkedList';
+    }
+
+    /**
+     * @description: 向后插入
+     * @param {any} element
+     * @return {void}
+     */
+    push(element) {
+        const node = new Node(element);
+        if (this.head === null) {
+            this.head = node;
+        } else {
+            let current = this.head;
+            while (current.next !== null) {
+                current = current.next;
+            }
+            current.next = node;
+        }
+        this._count++;
+    }
+
+    /**
+     * @description: 在指定位置插入新元素
+     * @param {any} element
+     * @param {int} position
+     * @return {void}
+     */
+    insert(element, position) {
+        if (position >= 0 && position <= this._count) {
+            if (this.isEmpty() || position === this._count) {
+                this.push(element);
+            } else {
+                const node = new Node(element);
+                if (position === 0) {
+                    node.next = this.head;
+                    this.head = node;
+                } else {
+                    let current = this.head;
+                    for (let i = 0,length = position -1; i < length; i++) {
+                        current = current.next;
+                    }
+                    node.next = current.next;
+                    current.next = node;
+                }
+                this._count++;
+            }
+        }
+    }
+
+    /**
+     * @description: 得到指定索引的元素
+     * @param {int} position
+     * @return {undefined|Node}
+     */
+    getElementAt(position) {
+        if (this.isEmpty()) {
+            return undefined
+        }
+        if (position === 0) {
+            return this.head;
+        }
+        if (position > 0 && position < this._count) {
+            let current = this.head;
+            for (let i = 0; i < position; i++) {
+                current = current.next;
+            }
+            return current;
+        }
+        return undefined
+    }
+
+
+    /**
+     * @description: 删除指定元素
+     * @param {any} element
+     * @return {int} position
+     */
+    remove(element) {
+        const index = this.indexOf(element);
+        if (index !== -1) {
+            this.removeAt(index);
+        }
+        return index;
+    }
+
+    /**
+     * @description: 返回元素在列表中的索引
+     * @param {any} element
+     * @return {int} position
+     */
+    indexOf(element) {
+        let result = -1;
+        if (this.isEmpty()) {
+            return result;
+        }
+        let current = this.head;
+        for (let i = 0, length = this._count; i < length; i++) {
+            if (this.isEqual(element, current.element)) {
+                return i;
+            } else {
+                current = current.next;
+            }
+        }
+        return result
+    }
+
+    /**
+     * @description:  删除指定位置的索引
+     * @param {int} position
+     * @return {undefined|any}
+     */
+    removeAt(position) {
+        if (this.isEmpty()) {
+            return undefined
+        }
+        if (position >= 0 && position < this._count) {
+            let current = this.head;
+            let result;
+            if (position === 0) {
+                result = current.element;
+                this.head = this.head.next;
+            }else {
+                for (let i = 0,length = position-1 ; i < length; i++) {
+                    current = current.next;
+                }
+                result = current.next.element;
+                current.next = current.next?.next ?? null;
+            }
+            this._count--;
+            return result
+        } else {
+            return undefined
+        }
+    }
+
+    /**
+     * @description: 判断是否为空
+     * @return {boolean}
+     */
+    isEmpty() {
+        return this._count === 0;
+    }
+
+    /**
+     * @description: 返回长度
+     * @return {int}
+     */
+    size() {
+        return this._count
+    }
+
+    /**
+     * @description: 比较a 与 b 是否相等
+     * @param {any} a
+     * @param {any} b
+     * @return {boolean}
+     */
+    isEqual(a,b){
+        return isSame(a,b)
+    }
+
+    /**
+     * @description: 清空
+     * @return {void}
+     */
+    clear(){
+        this._count = 0;
+        this.head = null;
+    }
+
+    /**
+     * @description: 转化为数组
+     * @return {any[]}
+     */
+    toArray() {
+        if (this.isEmpty()) {
+            return [];
+        } else {
+            const result = [];
+            let current = this.head;
+            while (current !== null) {
+                result.push(current.element);
+                current = current.next;
+            }
+            return result;
+        }
+
+    }
+}
+
+class DoublyNode extends Node {
+    constructor(element) {
+        super(element);
+        this.prev = null;
+    }
+}
+
+class DoublyLinkedList extends LinkedList {
+    constructor() {
+        super();
+        this.type = 'DoublyLinkedList';
+        this.tail = null;
+    }
+
+    /**
+     * @description: 向后插入元素
+     * @param {any} element
+     * @return {void}
+     */
+    push(element) {
+        const node = new DoublyNode(element);
+        if (this._count === 0) {
+            node.prev = this.head;
+            this.head = node;
+            this.tail = node;
+        } else {
+            node.prev = this.tail;
+            this.tail.next = node;
+            this.tail = node;
+        }
+        this._count++;
+    }
+
+    /**
+     * @description: 在指定position插入元素
+     * @param {any} element
+     * @param {int} position
+     * @return {void}
+     */
+    insert(element, position) {
+        if (0 <= position && position <= this._count) {
+            const node = new DoublyNode(element);
+            if(position === 0){
+                if(this.isEmpty()){
+                    this.push(element);
+                }else {
+                    node.prev = this.head.prev;
+                    node.next = this.head;
+                    this.head = node;
+                    this._count++;
+                }
+            }else if (position === this._count) {
+                this.push(element);
+            } else {
+                const prevNode = this.getElementAt(position - 1);
+                node.next = prevNode.next;
+                node.prev = prevNode;
+                prevNode.next = node;
+                this._count++;
+            }
+        }
+    }
+
+    removeAt(position) {
+        if (0 <= position && position < this._count) {
+            let result;
+            if (position === 0) {
+                result = this.head.element;
+                if (this._count === 1) {
+                    this.head = this.tail = null;
+                }else {
+                    this.head.next.prev = this.head.prev;
+                    this.head = this.head.next;
+                }
+            } else if (position === this._count - 1) {
+                result = this.tail.element;
+                this.tail = this.tail.prev;
+            } else {
+                const prevNode = this.getElementAt(position - 1);
+                result = prevNode.next.element;
+                prevNode.next.next.prev = prevNode;
+                prevNode.next = prevNode.next.next;
+            }
+            this._count--;
+            return result
+        }
+    }
+
+    clear() {
+        this._count = 0;
+        this.head = null;
+        this.tail = null;
+    }
+
+    /**
+     * @description: 删除为element的元素
+     * @param {any} element
+     * @return {int} position
+     */
+    remove(element) {
+        const index = this.indexOf(element);
+        if (index !== -1) {
+            this.removeAt(index);
+        }
+        return index;
+    }
+
+    /**
+     * @description: 返回指定位置的节点
+     * @param {int} position
+     * @return {DoublyNode|undefined}
+     */
+    getElementAt(position) {
+        if (0 <= position && position < this._count) {
+            if (position === 0) {
+                return this.head
+            } else if (position === this._count - 1) {
+                return this.tail
+            } else {
+                let current = this.head;
+                for (let i = 0, length = position; i < length; i++) {
+                    current = current.next;
+                }
+                return current
+            }
+        } else {
+            return undefined
+        }
+    }
+
+    /**
+     * @description: 返回指定元素position
+     * @param {any} element
+     * @return {int} position
+     */
+    indexOf(element){
+        let result = -1;
+        if(this.isEmpty()){
+            return result
+        }
+        let current = this.head;
+        for (let i = 0,length = this._count; i < length ; i++) {
+            if(this.isEqual(element,current.element)){
+                return i
+            }
+            current = current.next;
+        }
+        return result
+    }
+
+}
+
+class StackLinkedList{
+    constructor(){
+        this.items = new DoublyLinkedList();
+    }
+    push(element){
+        this.items.push(element);
+    }
+    pop(){
+        if(this.isEmpty()){
+            return undefined;
+        }
+        return this.items.removeAt(this.size() - 1);
+    }
+
+    size(){
+        return this.items.size()
+    }
+
+    peek(){
+        if (this.isEmpty()) {
+            return undefined
+        }
+        return this.items.getElementAt(this.size() - 1);
+    }
+
+    isEmpty(){
+        return this.items.isEmpty();
+    }
+
+    clear(){
+        this.items.clear();
+    }
+}
+
 const stack = new Stack();
 
 function baseConverter(number, base = 2) {
@@ -403,370 +801,6 @@ function palindromeChecker(string) {
     return isEqual;
 }
 
-const isSame = Object.is;
-
-class Node {
-    constructor(element) {
-        this._element = element;
-        this.next = null;
-    }
-
-    get element() {
-        return this._element;
-    }
-
-    set element(newValue) {
-        this._element = newValue;
-    }
-}
-
-class LinkedList {
-    constructor() {
-        this.head = null;
-        this._count = 0;
-        this.type = 'LinkedList';
-    }
-
-    /**
-     * @description: 向后插入
-     * @param {any} element
-     * @return {void}
-     */
-    push(element) {
-        const node = new Node(element);
-        if (this.head === null) {
-            this.head = node;
-        } else {
-            let current = this.head;
-            while (current.next !== null) {
-                current = current.next;
-            }
-            current.next = node;
-        }
-        this._count++;
-    }
-
-    /**
-     * @description: 在指定位置插入新元素
-     * @param {any} element
-     * @param {int} position
-     * @return {void}
-     */
-    insert(element, position) {
-        if (position >= 0 && position <= this._count) {
-            if (this.isEmpty() || position === this._count) {
-                this.push(element);
-            } else {
-                const node = new Node(element);
-                if (position === 0) {
-                    node.next = this.head;
-                    this.head = node;
-                } else {
-                    let current = this.head;
-                    for (let i = 0,length = position -1; i < length; i++) {
-                        current = current.next;
-                    }
-                    node.next = current.next.next;
-                    current.next = node;
-                }
-                this._count++;
-            }
-        }
-    }
-
-    /**
-     * @description: 得到指定索引的元素
-     * @param {int} position
-     * @return {undefined|Node}
-     */
-    getElementAt(position) {
-        if (this.isEmpty()) {
-            return undefined
-        }
-        if (position === 0) {
-            return this.head;
-        }
-        if (position > 0 && position < this._count) {
-            let current = this.head;
-            for (let i = 0; i < position; i++) {
-                current = current.next;
-            }
-            return current;
-        }
-        return undefined
-    }
-
-
-    /**
-     * @description: 删除指定元素
-     * @param {any} element
-     * @return {int} position
-     */
-    remove(element) {
-        const index = this.indexOf(element);
-        if (index !== -1) {
-            this.removeAt(index);
-        }
-        return index;
-    }
-
-    /**
-     * @description: 返回元素在列表中的索引
-     * @param {any} element
-     * @return {int} position
-     */
-    indexOf(element) {
-        let result = -1;
-        if (this.isEmpty()) {
-            return result;
-        }
-        let current = this.head;
-        for (let i = 0, length = this._count; i < length; i++) {
-            if (this.isEqual(element, current.element)) {
-                return i;
-            } else {
-                current = current.next;
-            }
-        }
-        return result
-    }
-
-    /**
-     * @description:  删除指定位置的索引
-     * @param {int} position
-     * @return {undefined|any}
-     */
-    removeAt(position) {
-        if (this.isEmpty()) {
-            return undefined
-        }
-        if (position >= 0 && position < this._count) {
-            let current = this.head;
-            let result;
-            if (position === 0) {
-                result = current.element;
-                this.head = this.head.next;
-            }else {
-                for (let i = 0,length = position-1 ; i < length; i++) {
-                    current = current.next;
-                }
-                result = current.next.element;
-                current.next = current.next?.next ?? null;
-            }
-            this._count--;
-            return result
-        } else {
-            return undefined
-        }
-    }
-
-    /**
-     * @description: 判断是否为空
-     * @return {boolean}
-     */
-    isEmpty() {
-        return this._count === 0;
-    }
-
-    /**
-     * @description: 返回长度
-     * @return {int}
-     */
-    size() {
-        return this._count
-    }
-
-    /**
-     * @description: 比较a 与 b 是否相等
-     * @param {any} a
-     * @param {any} b
-     * @return {boolean}
-     */
-    isEqual(a,b){
-        return isSame(a,b)
-    }
-
-    /**
-     * @description: 清空
-     * @return {void}
-     */
-    clear(){
-        this._count = 0;
-        this.head = null;
-    }
-
-    /**
-     * @description: 转化为数组
-     * @return {any[]}
-     */
-    toArray() {
-        if (this.isEmpty()) {
-            return [];
-        } else {
-            const result = [];
-            let current = this.head;
-            while (current !== null) {
-                result.push(current.element);
-                current = current.next;
-            }
-            return result;
-        }
-
-    }
-}
-
-class DoublyNode extends Node {
-    constructor(element) {
-        super(element);
-        this.prev = null;
-    }
-}
-
-class DoublyLinkedList extends LinkedList {
-    constructor() {
-        super();
-        this.type = 'DoublyLinkedList';
-        this.tail = null;
-    }
-
-    /**
-     * @description: 向后插入元素
-     * @param {any} element
-     * @return {void}
-     */
-    push(element) {
-        const node = new DoublyNode(element);
-        if (this._count === 0) {
-            node.prev = this.head;
-            this.head = node;
-            this.tail = node;
-        } else {
-            node.prev = this.tail;
-            this.tail.next = node;
-            this.tail = node;
-        }
-        this._count++;
-    }
-
-    /**
-     * @description: 在指定position插入元素
-     * @param {any} element
-     * @param {int} position
-     * @return {void}
-     */
-    insert(element, position) {
-        if (0 <= position && position <= this._count) {
-            const node = new DoublyNode(element);
-            if(position === 0){
-                if(this.isEmpty()){
-                    this.push(element);
-                }else {
-                    node.prev = this.head.prev;
-                    node.next = this.head;
-                    this.head = node;
-                    this._count++;
-                }
-            }else if (position === this._count) {
-                this.push(element);
-            } else {
-                const prevNode = this.getElementAt(position - 1);
-                node.next = prevNode.next;
-                node.prev = prevNode;
-                prevNode.next = node;
-                this._count++;
-            }
-        }
-    }
-
-    removeAt(position) {
-        if (0 <= position && position < this._count) {
-            let result;
-            if (position === 0) {
-                result = this.head.element;
-                if (this._count === 1) {
-                    this.head = this.tail = null;
-                }else {
-                    this.head.next.prev = this.head.prev;
-                    this.head = this.head.next;
-                }
-            } else if (position === this._count - 1) {
-                result = this.tail.element;
-                this.tail = this.tail.prev;
-            } else {
-                const prevNode = this.getElementAt(position - 1);
-                result = prevNode.next.element;
-                prevNode.next.next.prev = prevNode;
-                prevNode.next = prevNode.next.next;
-            }
-            this._count--;
-            return result
-        }
-    }
-
-    clear() {
-        this._count = 0;
-        this.head = null;
-        this.tail = null;
-    }
-
-    /**
-     * @description: 删除为element的元素
-     * @param {any} element
-     * @return {int} position
-     */
-    remove(element) {
-        const index = this.indexOf(element);
-        if (index !== -1) {
-            this.removeAt(index);
-        }
-        return index;
-    }
-
-    /**
-     * @description: 返回指定位置的节点
-     * @param {int} position
-     * @return {DoublyNode|undefined}
-     */
-    getElementAt(position) {
-        if (0 <= position && position < this._count) {
-            if (position === 0) {
-                return this.head
-            } else if (position === this._count - 1) {
-                return this.tail
-            } else {
-                let current = this.head;
-                for (let i = 0, length = position; i < length; i++) {
-                    current = current.next;
-                }
-                return current
-            }
-        } else {
-            return undefined
-        }
-    }
-
-    /**
-     * @description: 返回指定元素position
-     * @param {any} element
-     * @return {int} position
-     */
-    indexOf(element){
-        let result = -1;
-        if(this.isEmpty()){
-            return result
-        }
-        let current = this.head;
-        for (let i = 0,length = this._count; i < length ; i++) {
-            if(this.isEqual(element,current.element)){
-                return i
-            }
-            current = current.next;
-        }
-        return result
-    }
-
-}
-
 class CircularLinkedList extends LinkedList {
 
     constructor() {
@@ -824,4 +858,214 @@ class CircularLinkedList extends LinkedList {
     }
 }
 
-export { CircularLinkedList, DoubleEndedQueue, DoublyLinkedList, LinkedList, PriorityQueue, Queue, Stack, StackArray, baseConverter, hotPotato, palindromeChecker };
+const Compare = {
+    LESS_THAN:-1,
+    BIGGER_THAN:1
+};
+
+class SortedLinkedList extends LinkedList{
+    constructor(){
+        super();
+
+    }
+
+    isEqual(a,b){
+        if(a===b){
+            return 0;
+        }
+        return a < b ? Compare.LESS_THAN : Compare.BIGGER_THAN;
+    }
+
+    getIndexNextSortedElement(element){
+        let current = this.head;
+        let i = 0;
+        for (let length = this.size(); i < length && current; i++) {
+            const comp = this.isEqual(element,current.element);
+            if(comp === Compare.LESS_THAN){
+                return 1;
+            }
+            current = current.next;
+        }
+        return i;
+    }
+
+    // index 不会生效，因为内部做了排序
+    insert(element,index = 0){
+        if(this.isEmpty()){
+            return super.insert(element,0);
+        }
+        const position = this.getIndexNextSortedElement(element);
+        return super.insert(element,position);
+    }
+
+}
+
+class Set{
+    constructor(values){
+        this.items = {};
+        if(values && values.length){
+            for (let i = 0,length = values.length; i < length; i++) {
+                this.add(values[i]);
+            }
+        }
+    }
+
+    /**
+     * @description: 添加一个对象，添加成功返回`true`,否则返回`false`
+     * @param {any} element
+     * @return {boolean}
+     */
+    add(element){
+        if(!this.has(element)){
+            this.items[element] = element;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @description: 检查是否存在该元素, 如果存在返回`true`,否则返回`false`
+     * @param {any} element
+     * @return {boolean}
+     */
+    has(element){
+        return Object.prototype.hasOwnProperty.call(this.items, element);
+    }
+
+    /**
+     * @description: 返回集合长度
+     * @return {number}
+     */
+    size(){
+        return Object.keys(this.items).length
+    }
+
+    /**
+     * @description: 删除元素，删除成功返回`true`,否则返回`false`
+     * @param {any} element
+     * @return {boolean}
+     */
+    delete(element){
+        if(this.has(element)){
+            delete this.items[element];
+            return true
+        }
+        return false
+    }
+
+    /**
+     * @description: 清空集合
+     * @return {void}
+     */
+    clear(){
+        this.items = {};
+    }
+
+    /**
+     * @description: 返一个包含所有数组的元素
+     * @return {any[]}
+     */
+    values(){
+        return Object.values(this.items)
+    }
+
+    
+    /**
+     * @description: A集合与B集合取并集于当前集合
+     * @param {Set} ASet
+     * @param {Set} BSet
+     * @return {this}
+     */
+    union(ASet,BSet){
+        this.clear();
+        this.unionWidth(ASet);
+        this.unionWidth(BSet);
+        return this
+    }
+
+    /**
+     * @description: 当前集合与B集合求并集
+     * @param {Set} BSet
+     * @return {this}
+     */
+    unionWidth(BSet){
+        const values = BSet.values();
+        for (let i = 0,length = values.length; i < length; i++) {
+            this.add(values[i]);       
+        }
+        return this
+    }
+
+    /**
+     * @description: A集合与B集合取交集于当前集合
+     * @param {Set} ASet
+     * @param {Set} BSet
+     * @return {this}
+     */
+    intersection(ASet,BSet){
+        this.clear();
+        this.unionWidth(ASet);
+        this.intersectionWidth(BSet);
+        return this
+    }
+
+    /**
+     * @description: 当前集合与B集合取交集
+     * @param {Set} BSet
+     * @return {this}
+     */
+    intersectionWidth(BSet){
+        const values = this.values();
+        for (let i = 0,length = this.size(); i < length; i++) {
+            if(!BSet.has(values[i])){
+                this.delete(values[i]);
+            }            
+        }
+        return this;
+    }
+
+    /**
+     * @description: A集合与B集合求茶集于A集合中
+     * @param {Set} ASet
+     * @param {Set} BSet
+     * @return {this}
+     */
+    difference(ASet,BSet){
+        this.clear();
+        this.unionWidth(ASet);
+        this.differenceWidth(BSet);
+        return this
+    }
+
+    /**
+     * @description: 当前集合与B集合求差集
+     * @param {Set} BSet
+     * @return {this}
+     */
+    differenceWidth(BSet){
+        const values = BSet.values();
+        for (let i = 0,length = values.length; i < length; i++) {
+            if (this.has(values[i])) {
+                this.delete(values[i]);
+            }
+        }
+        return this
+    }
+
+    /**
+     * @description: 判断Set是否是当前的集合的子集
+     * @param {Set} Set
+     * @return {boolean}
+     */
+    isSubsetOf(Set){
+        const values = Set.values();
+        for (let i = 0,length = values.length; i < length; i++) {
+            if(!this.has(values[i])){
+                return false
+            }
+        }
+        return true
+    }
+}
+
+export { CircularLinkedList, DoubleEndedQueue, DoublyLinkedList, LinkedList, PriorityQueue, Queue, Set, SortedLinkedList, Stack, StackArray, StackLinkedList, baseConverter, hotPotato, palindromeChecker };
